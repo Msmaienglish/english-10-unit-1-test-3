@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEST PRACTICE UNIT 1 - TEST 3</title>
+<style>
+:root {
+  --ocean:#147db5; --deep:#0b527e; --sky:#e5f6ff; --foam:#fffef1; --mint:#e2f7df;
+  --navy:#123f62; --line:#b9e4f6; --card:#ffffffee; --correct:#daf7e4; --correct-b:#32a66b;
+  --wrong:#ffe1e3; --wrong-b:#e56a74; --cream:#fff7dc; --lav:#eef0ff; --shadow:0 12px 30px rgba(20,87,128,.14);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Nunito","Trebuchet MS",Arial,sans-serif;color:#16364b;background:
+radial-gradient(circle at 20% 10%,#ffffffcc 0 4%,transparent 5%),
+linear-gradient(155deg,#dff5ff 0%,#fff7b8 48%,#ddf5df 100%);min-height:100vh}
+button,input{font:inherit}
+.ocean-bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bubble{position:absolute;border:2px solid #ffffffb8;border-radius:50%;background:#ffffff30;animation:rise 14s linear infinite}
+@keyframes rise{from{transform:translateY(110vh) scale(.7)}to{transform:translateY(-20vh) scale(1.2)}}
+.swimmer{position:absolute;font-size:34px;filter:drop-shadow(0 4px 5px #0c4f6e22);opacity:.48;animation:swim 24s linear infinite;white-space:nowrap}
+.swimmer.rev{animation-name:swimrev}
+@keyframes swim{from{transform:translateX(-15vw)}to{transform:translateX(115vw)}}
+@keyframes swimrev{from{transform:translateX(115vw) scaleX(-1)}to{transform:translateX(-15vw) scaleX(-1)}}
+.shell{position:relative;z-index:2;max-width:1500px;margin:auto;padding:14px}
+header{text-align:center;background:linear-gradient(135deg,#fffbd7ee,#e7f8ffee,#e7f8e7ee);border:1px solid #8dcbea;border-radius:18px;padding:14px 18px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr;gap:10px;align-items:center}
+header h1{margin:0;color:var(--deep);font-size:clamp(22px,3vw,28px);letter-spacing:.4px;text-align:center}
+.meta{text-align:center;font-size:13px;line-height:1.5;color:#46677a}
+.header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.pill{border:1px solid #8bc7e7;background:#fff;border-radius:999px;padding:8px 11px;color:var(--deep);font-weight:800;cursor:pointer}
+.identity{margin:12px 0;background:#ffffffd9;border:1px solid #bce4f4;border-radius:14px;padding:10px 12px;display:grid;grid-template-columns:1fr 180px auto;gap:10px;align-items:end}
+.identity label{font-size:12px;font-weight:800;color:#4b7187;display:block;margin-bottom:4px}
+.identity input,.vocab-input{width:100%;border:1px solid #b9dceb;border-radius:10px;padding:9px 10px;background:#fff;outline:none}
+.identity input:focus,.vocab-input:focus{border-color:#2d94c8;box-shadow:0 0 0 3px #4eb5e622}
+.stats{position:sticky;top:8px;z-index:10;background:linear-gradient(90deg,#0d618fe8,#2585b4e8,#52a66fe8);color:#fff;border-radius:15px;padding:10px 12px;box-shadow:0 8px 22px #0b527d2e;display:grid;grid-template-columns:repeat(6,minmax(80px,1fr));gap:8px;margin:10px 0;backdrop-filter:blur(8px)}
+.stat{text-align:center;font-size:11px;opacity:.95} .stat b{display:block;font-size:17px}
+.progressbar{grid-column:1/-1;height:7px;background:#ffffff3c;border-radius:999px;overflow:hidden} .progressbar>i{display:block;height:100%;width:0;background:#ffe36f;border-radius:inherit;transition:width .3s}
+.section-tabs{display:flex;gap:7px;overflow:auto;padding:3px 1px 10px;scrollbar-width:thin}
+.tab{border:1px solid #9bcfe7;background:#ffffffd9;color:#275c78;border-radius:999px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+.tab.active{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+.section{display:none} .section.active{display:block}
+.split{display:grid;grid-template-columns:minmax(420px,48%) 1fr;gap:14px;align-items:start}
+.passage-pane{position:sticky;top:110px;max-height:calc(100vh - 125px);overflow:auto;background:#fffef4f2;border:1px solid #a9d9ee;border-radius:18px;padding:18px;box-shadow:var(--shadow);line-height:1.62}
+.passage-pane h2{text-align:center;font-family:Georgia,serif;font-size:20px;margin:4px 0 6px;color:#123e5c}
+.passage-pane h3{font-family:Georgia,serif;margin:8px 0 3px;color:#173b52}
+.passage-pane p,.passage-pane li{font-family:Georgia,"Times New Roman",serif;font-size:17px}
+.paper-instruction{font-family:Georgia,"Times New Roman",serif;font-weight:700;background:#123f62;color:#fff;margin:-18px -18px 15px;padding:12px 15px;border-radius:17px 17px 0 0;line-height:1.3}
+.questions-pane{display:flex;flex-direction:column;gap:12px}
+.qcard{background:var(--card);border:1px solid #b8e2f2;border-radius:18px;padding:16px;box-shadow:var(--shadow);scroll-margin-top:115px}
+.qhead{display:flex;justify-content:space-between;gap:10px;align-items:start;margin-bottom:10px}
+.qnum{font-weight:900;color:var(--deep);font-size:17px;line-height:1.4} .qbadge{font-size:11px;background:linear-gradient(90deg,#fff2a8,#e5f5df);color:#17628d;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.arrange-bank p{font-family:Georgia,"Times New Roman",serif;margin:6px 0;line-height:1.45}
+.options{display:grid;gap:8px}
+.option{width:100%;text-align:left;border:1px solid #bcdfee;background:#f8fdff;border-radius:13px;padding:11px 12px;cursor:pointer;transition:.15s;display:flex;gap:10px;align-items:flex-start;color:#173d55;line-height:1.42}
+.option:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 14px #166c9a17;border-color:#5db3d9}
+.option:focus-visible{outline:3px solid #42a5d3;outline-offset:2px}
+.option .letter{font-weight:900;color:#0f6e9f;min-width:22px}
+.option.correct{background:var(--correct);border-color:var(--correct-b)} .option.correct .letter{color:#167549}
+.option.wrong{background:var(--wrong);border-color:var(--wrong-b)} .option.wrong .letter{color:#b4414a}
+.option.strike .txt{text-decoration:line-through;text-decoration-thickness:2px;opacity:.62}
+.state-tag{margin-left:auto;font-size:11px;font-weight:900}
+.feedback{display:none;margin-top:10px;border-radius:12px;padding:10px 12px;font-weight:900}
+.feedback.good{display:block;background:var(--correct);color:#167247}
+.feedback.bad{display:block;background:var(--wrong);color:#a23b46}
+.explain{display:none;margin-top:10px;background:linear-gradient(135deg,#fff5b8,#eff8ff,#eef9e7);border:1px solid #eadca5;border-radius:14px;padding:13px;line-height:1.5}
+.explain.open{display:block}
+.explain h4{margin:0 0 9px;color:#153f60}
+.ex-step{background:#ffffffb8;border-radius:10px;padding:9px 10px;margin:7px 0} .ex-step ul{margin:6px 0;padding-left:20px} .ex-step li{margin:5px 0}
+.answer-line{margin-top:9px;background:#d9f7e6;border-left:4px solid #2b9f68;padding:9px 10px;border-radius:8px;font-weight:900;color:#136b43}
+.qactions{display:none;gap:8px;flex-wrap:wrap;margin-top:10px}
+.qactions.show{display:flex}
+.smallbtn{border:1px solid #9fcfe5;background:#fff;color:#145f87;border-radius:10px;padding:8px 10px;font-weight:800;cursor:pointer}
+.smallbtn.primary{background:#1179b2;color:#fff;border-color:#1179b2}
+.vocab-prep{background:#ffffffed;border:1px solid #9ed8ee;border-radius:18px;box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.vocab-prep h3{margin:0 0 5px;color:var(--deep)} .vocab-prep .hint{font-size:12px;color:#5b7d90;margin-bottom:10px}
+.vocab-grid{display:grid;grid-template-columns:1fr 1.2fr;border:1px solid #b8dfea;border-radius:12px;overflow:hidden}
+.vrow{display:contents} .vcell{padding:8px 10px;border-bottom:1px solid #d9edf5;background:#fbfeff} .vcell:nth-child(2n){border-left:1px solid #d9edf5;background:#fff}
+.vword{font-weight:800} .pos{font-size:11px;color:#668596}
+.section3-wrap{display:grid;grid-template-columns:260px 1fr;gap:14px}
+.arrange-guide{position:sticky;top:110px;background:#f6fdff;border:1px solid #a9d9ee;border-radius:18px;padding:16px;box-shadow:var(--shadow);line-height:1.5}
+.arrange-guide h3{margin-top:0;color:var(--deep)}
+.footer-tools{margin:18px 0 8px;background:#ffffffdf;border:1px solid #b7dfef;border-radius:18px;padding:14px;box-shadow:var(--shadow);display:flex;gap:9px;flex-wrap:wrap}
+.submitbox{display:none;margin-top:12px;background:linear-gradient(135deg,#e7f8ff,#e9fff5);border:1px solid #90d5cb;border-radius:16px;padding:16px}
+.submitbox.show{display:block}
+.scorebig{font-size:28px;font-weight:900;color:#0d668f}
+.note{font-size:12px;color:#5d7888}
+.shake{animation:shake .35s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.confetti{position:fixed;width:9px;height:13px;border-radius:2px;z-index:99;pointer-events:none;animation:confetti 900ms ease-out forwards}
+@keyframes confetti{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(720deg);opacity:0}}
+.insert-sentence{display:block;margin:7px 0;padding:9px;background:#fff4c9;border-radius:9px;font-family:Georgia,serif}
+.notice{background:#fff0d8;border:1px solid #f0c57a;border-radius:12px;padding:10px;margin-top:10px;font-size:13px}
+@media(max-width:900px){
+  .split,.section3-wrap{grid-template-columns:1fr}
+  .passage-pane,.arrange-guide{position:relative;top:auto;max-height:none}
+  .stats{grid-template-columns:repeat(3,1fr);top:4px}
+  .identity{grid-template-columns:1fr 1fr} .identity>button{grid-column:1/-1}
+}
+@media(max-width:560px){
+  .shell{padding:8px} header{grid-template-columns:1fr} .header-actions{justify-content:center}
+  .stats{font-size:10px} .stat b{font-size:14px} .qcard{padding:12px} .passage-pane p,.passage-pane li{font-size:16px}
+  .vocab-grid{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important} .ocean-bg{display:none}}
+@media print{
+  body{background:#fff;color:#000} .ocean-bg,.header-actions,.stats,.section-tabs,.qactions,.footer-tools,.identity button{display:none!important}
+  .shell{max-width:none;padding:0} header,.identity,.qcard,.passage-pane,.vocab-prep{box-shadow:none;border:1px solid #aaa;background:#fff}
+  .section{display:block!important;page-break-before:auto} .split,.section3-wrap{display:block} .passage-pane{position:relative;max-height:none;margin-bottom:10px}
+  .qcard{break-inside:avoid} .explain{background:#fff}
+}
+</style>
+
+<style id="test3-midnight-violet-theme">
+:root{
+  --blue:#8db8ff;
+  --blue2:#cabdff;
+  --yellow:#e4d5ff;
+  --yellow2:#2d2947;
+  --green:#9fd8c4;
+  --green2:#203b38;
+  --sky:#1a2036;
+  --ink:#eef0ff;
+  --correct:#203f37;
+  --correct-b:#7ed7ad;
+  --wrong:#4a2937;
+  --wrong-b:#f095ad;
+  --card:#20253bea;
+  --shadow:0 14px 34px rgba(2,4,17,.44);
+}
+html{color-scheme:dark}
+body{
+  color:#eef0ff;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(139,120,211,.22) 0 7%,transparent 22%),
+    radial-gradient(circle at 88% 14%,rgba(83,126,190,.18) 0 8%,transparent 24%),
+    radial-gradient(circle at 46% 82%,rgba(114,82,156,.16) 0 10%,transparent 28%),
+    linear-gradient(150deg,#0d1020 0%,#15182a 40%,#1a1730 72%,#101a2d 100%);
+}
+.bg{opacity:.72}
+.float{opacity:.38;filter:drop-shadow(0 4px 10px rgba(174,158,255,.25))}
+.dot{background:rgba(201,190,255,.08);border-color:rgba(185,204,255,.25)}
+header{
+  background:linear-gradient(135deg,rgba(31,35,60,.97),rgba(40,32,68,.96),rgba(25,42,65,.96));
+  border-color:#635f91;
+  box-shadow:0 14px 36px rgba(4,5,18,.46);
+  text-align:center;
+}
+header h1{color:#e6ddff;text-shadow:0 2px 18px rgba(184,165,255,.20);text-align:center}
+.meta{color:#c8cbe4;text-align:center}
+.header-actions{justify-content:center}
+.pill{
+  border-color:#666892;
+  background:#262b46;
+  color:#e9e7ff;
+}
+.pill:hover{background:#343054;border-color:#9792cf}
+.identity{
+  background:rgba(30,35,57,.94);
+  border-color:#545c82;
+}
+.identity label{color:#b9bee0}
+.identity input,.vocab-input{
+  background:#171b2e;
+  border-color:#4f587e;
+  color:#f0f2ff;
+}
+.identity input::placeholder,.vocab-input::placeholder{color:#7f86a8}
+.identity input:focus,.vocab-input:focus{
+  border-color:#a598ec;
+  box-shadow:0 0 0 3px rgba(165,152,236,.18);
+}
+.stats{
+  background:linear-gradient(90deg,rgba(39,49,83,.97),rgba(73,57,111,.97),rgba(42,66,102,.97));
+  color:#fff;
+  box-shadow:0 10px 28px rgba(0,0,0,.34);
+}
+.progressbar{background:rgba(255,255,255,.11)}
+.progressbar i{background:linear-gradient(90deg,#9fc3ff,#bea8ff,#a7e0d0)}
+.tab{
+  border-color:#555d85;
+  background:#20253d;
+  color:#cdd2ee;
+}
+.tab:hover{background:#2a304d}
+.tab.active{
+  background:linear-gradient(90deg,#566fa8,#7661aa,#4f789d);
+  color:#fff;
+}
+.passage{
+  background:linear-gradient(160deg,rgba(27,32,52,.97),rgba(29,30,51,.97));
+  border-color:#515d85;
+  color:#edf0ff;
+  box-shadow:var(--shadow);
+}
+.passage h2,.passage h3{color:#e8e0ff}
+.passage p,.passage li{color:#edf0ff}
+.paper-instruction{
+  background:linear-gradient(90deg,#283b67,#4b3b72,#284b6f);
+  color:#f7f5ff;
+}
+.vocab{
+  background:linear-gradient(145deg,rgba(33,37,62,.96),rgba(40,34,65,.96));
+  border-color:#5a5d88;
+}
+.vocab h3{color:#ded5ff}
+.vocab .hint,.note{color:#aeb5d0}
+.vgrid{border-color:#4d567a}
+.vcell{background:#20253c;border-color:#3e4769;color:#e8eafa}
+.vcell:nth-child(2n){background:#191e31;border-color:#3e4769}
+.pos{color:#9ca4c6}
+.arr-guide{
+  background:linear-gradient(150deg,#222744,#342948,#1f3347);
+  border-color:#5b628b;
+  color:#eef0ff;
+}
+.arr-guide h3{color:#e6dcff}
+.qcard{
+  background:linear-gradient(145deg,rgba(31,36,59,.96),rgba(34,31,57,.96));
+  border-color:#50597e;
+  box-shadow:var(--shadow);
+}
+.qnum{color:#e9e4ff}
+.qbadge{
+  background:linear-gradient(90deg,#4b4869,#4a5d72);
+  color:#e6e8ff;
+}
+.option{
+  border-color:#4b557a;
+  background:linear-gradient(90deg,#20263e,#24223c);
+  color:#eff1ff;
+}
+.option:hover:not(:disabled){
+  border-color:#9287d2;
+  box-shadow:0 7px 18px rgba(157,139,226,.12);
+}
+.option:focus-visible{outline-color:#a793ea}
+.option .letter{color:#aabfff}
+.option.correct{
+  background:linear-gradient(90deg,#203e36,#1e443d);
+  border-color:#6ec69c;
+}
+.option.correct .letter{color:#a9e9ca}
+.option.wrong{
+  background:linear-gradient(90deg,#482b39,#422839);
+  border-color:#d47e98;
+}
+.option.wrong .letter{color:#ffabc0}
+.feedback.good{background:#203f37;color:#b6efd2}
+.feedback.bad{background:#4a2937;color:#ffc2d0}
+.explain{
+  background:linear-gradient(145deg,#292640,#222d43,#242b3e);
+  border-color:#65618b;
+  color:#eef0ff;
+}
+.explain h4{color:#e2d9ff}
+.ex-step{background:rgba(18,22,39,.70)}
+.answer-line{
+  background:#203e36;
+  border-left-color:#78cfa6;
+  color:#baf0d4;
+}
+.smallbtn{
+  border-color:#5c658b;
+  background:#252a44;
+  color:#dfe3ff;
+}
+.smallbtn.primary{
+  background:linear-gradient(90deg,#6279b4,#7864ad);
+  color:#fff;
+}
+.footer-tools{
+  background:rgba(29,34,56,.94);
+  border-color:#515a80;
+}
+.submitbox{
+  background:linear-gradient(135deg,#272642,#242f47,#253a3c);
+  border-color:#646692;
+  color:#eef0ff;
+}
+.scorebig{color:#cabdff}
+.insert-sentence{background:#35304f;color:#f2edff}
+@media print{
+  html{color-scheme:light}
+  body{background:#fff!important;color:#000!important}
+  header,.identity,.qcard,.passage,.vocab,.arr-guide,.submitbox{
+    background:#fff!important;color:#000!important;border-color:#aaa!important;
+  }
+  header h1,.meta,.qnum,.passage h2,.passage h3,.vocab h3,.arr-guide h3,
+  .passage p,.passage li,.explain,.explain h4,.ex-step,.answer-line{
+    color:#000!important;background:#fff!important;
+  }
+  .option{background:#fff!important;color:#000!important;border-color:#aaa!important}
+}
+</style>
+<style id="test3-full-readability-fix">
+/* TEST 3: dark midnight-violet shell + light exam paper with black text */
+
+/* Main reading / cloze paper */
+.passage-pane{
+  background:linear-gradient(160deg,#fbfaff,#f5f3fb)!important;
+  color:#111827!important;
+  border-color:#858caf!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.28)!important;
+}
+.passage-pane p,
+.passage-pane li,
+.passage-pane h2,
+.passage-pane h3,
+.passage-pane b,
+.passage-pane strong,
+.passage-pane u,
+.passage-pane span{
+  color:#111827!important;
+}
+.passage-pane h2,.passage-pane h3{color:#17223a!important;}
+.paper-instruction{
+  background:linear-gradient(90deg,#26365f,#44355f,#274a69)!important;
+  color:#ffffff!important;
+}
+.paper-instruction, .paper-instruction *{color:#ffffff!important;}
+
+/* Question cards: light paper + dark text */
+.qcard{
+  background:linear-gradient(145deg,#faf9ff,#f4f3fa)!important;
+  color:#111827!important;
+  border-color:#8088aa!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.25)!important;
+}
+.qcard p,.qcard li,.qcard ul,.qcard ol,.qcard div,.qcard span{color:#111827;}
+.qnum{color:#17223a!important;}
+.qbadge{background:#e5e0f4!important;color:#34304d!important;border:1px solid #c1b7dc;}
+
+.option{
+  background:#ffffff!important;
+  color:#111827!important;
+  border-color:#b2b5c9!important;
+}
+.option .txt{color:#111827!important;}
+.option .letter{color:#4b5f9b!important;}
+.option .state-tag{color:#263244!important;}
+.option:hover:not(:disabled){
+  background:#f0edfa!important;
+  border-color:#7d72b5!important;
+}
+.option.correct{
+  background:#dcf5e6!important;
+  border-color:#4da778!important;
+}
+.option.correct .letter,.option.correct .state-tag{color:#17613f!important;}
+.option.wrong{
+  background:#ffe1e7!important;
+  border-color:#c9667c!important;
+}
+.option.wrong .letter,.option.wrong .state-tag{color:#8f3045!important;}
+.option.strike .txt{color:#4b5563!important;}
+
+.feedback.good{background:#dcf5e6!important;color:#17613f!important;}
+.feedback.bad{background:#ffe1e7!important;color:#8f3045!important;}
+
+.explain{
+  background:linear-gradient(145deg,#f3efff,#f7f9ff,#f7f4ea)!important;
+  color:#111827!important;
+  border-color:#b9b1d2!important;
+}
+.explain h4{color:#2b2548!important;}
+.explain p,.explain li,.explain b,.explain strong,.explain span{color:#111827!important;}
+.ex-step{background:#ffffff!important;color:#111827!important;border:1px solid #e1deeb;}
+.answer-line{background:#dff5e7!important;color:#155d3d!important;border-left-color:#4da778!important;}
+
+/* Vocabulary prep */
+.vocab-prep{
+  background:linear-gradient(145deg,#faf9ff,#f5f7ff)!important;
+  color:#111827!important;
+  border-color:#858caf!important;
+}
+.vocab-prep h3{color:#262144!important;}
+.vocab-prep .hint{color:#4b5563!important;}
+.vcell{background:#ffffff!important;color:#111827!important;border-color:#d4d6e2!important;}
+.vcell:nth-child(2n){background:#f7f6fb!important;}
+.vword{color:#111827!important;}.pos{color:#5f6679!important;}
+.vocab-input{background:#ffffff!important;color:#111827!important;border-color:#b7bacd!important;}
+.vocab-input::placeholder{color:#8b90a0!important;}
+
+/* Arrangement instruction + arrangement text */
+.arrange-guide{
+  background:linear-gradient(145deg,#f0ecfa,#eef4ff)!important;
+  color:#111827!important;
+  border-color:#858caf!important;
+}
+.arrange-guide h3,.arrange-guide p,.arrange-guide b{color:#111827!important;}
+.arrange-bank{
+  background:#ffffff!important;
+  color:#111827!important;
+  border:1px solid #d0d2df!important;
+  border-radius:12px;
+  padding:10px 12px;
+}
+.arrange-bank p,.arrange-bank b,.arrange-bank span{color:#111827!important;}
+.insert-sentence{background:#eee9fb!important;color:#111827!important;}
+
+/* Bottom result panel readable */
+.submitbox{background:linear-gradient(135deg,#f1edfb,#eef5ff,#eef8f4)!important;color:#111827!important;border-color:#9d96b9!important;}
+.submitbox p,.submitbox b,.submitbox span{color:#111827!important;}
+.scorebig{color:#453a77!important;}
+
+/* Keep buttons in the light paper readable */
+.smallbtn{background:#ffffff!important;color:#27395e!important;border-color:#9da4bf!important;}
+.smallbtn.primary{background:linear-gradient(90deg,#586ea6,#725e9c)!important;color:#ffffff!important;border-color:transparent!important;}
+
+@media print{
+  .passage-pane,.qcard,.vocab-prep,.arrange-guide,.arrange-bank,.explain,.ex-step,.submitbox{background:#fff!important;color:#000!important;}
+  .passage-pane *, .qcard *, .vocab-prep *, .arrange-guide *, .arrange-bank *, .explain *, .submitbox *{color:#000!important;}
+  .paper-instruction,.paper-instruction *{color:#fff!important;}
+}
+</style>
+
+</head>
+<body>
+<div class="ocean-bg" aria-hidden="true">
+  <div class="swimmer" style="top:12%;animation-duration:27s">🐠　📘　⭐</div>
+  <div class="swimmer rev" style="top:30%;animation-duration:32s;animation-delay:-10s">🐬　✏️　🌿</div>
+  <div class="swimmer" style="top:52%;animation-duration:38s;animation-delay:-18s">🐳　🎒　☀️</div>
+  <div class="swimmer rev" style="top:73%;animation-duration:29s;animation-delay:-7s">🐢　📚　🐡</div>
+  <div class="swimmer" style="top:88%;animation-duration:34s;animation-delay:-14s">🦀　💛　💙</div>
+  <span class="bubble" style="left:0%;width:12px;height:12px;animation-delay:-0.0s;animation-duration:10s"></span><span class="bubble" style="left:13%;width:17px;height:17px;animation-delay:-1.3s;animation-duration:12s"></span><span class="bubble" style="left:26%;width:22px;height:22px;animation-delay:-2.6s;animation-duration:14s"></span><span class="bubble" style="left:39%;width:27px;height:27px;animation-delay:-3.9000000000000004s;animation-duration:16s"></span><span class="bubble" style="left:52%;width:32px;height:32px;animation-delay:-5.2s;animation-duration:18s"></span><span class="bubble" style="left:65%;width:12px;height:12px;animation-delay:-6.5s;animation-duration:10s"></span><span class="bubble" style="left:78%;width:17px;height:17px;animation-delay:-7.800000000000001s;animation-duration:12s"></span><span class="bubble" style="left:91%;width:22px;height:22px;animation-delay:-9.1s;animation-duration:14s"></span><span class="bubble" style="left:7%;width:27px;height:27px;animation-delay:-10.4s;animation-duration:16s"></span><span class="bubble" style="left:20%;width:32px;height:32px;animation-delay:-11.700000000000001s;animation-duration:18s"></span><span class="bubble" style="left:33%;width:12px;height:12px;animation-delay:-13.0s;animation-duration:10s"></span><span class="bubble" style="left:46%;width:17px;height:17px;animation-delay:-14.3s;animation-duration:12s"></span><span class="bubble" style="left:59%;width:22px;height:22px;animation-delay:-15.600000000000001s;animation-duration:14s"></span><span class="bubble" style="left:72%;width:27px;height:27px;animation-delay:-16.900000000000002s;animation-duration:16s"></span><span class="bubble" style="left:85%;width:32px;height:32px;animation-delay:-18.2s;animation-duration:18s"></span><span class="bubble" style="left:1%;width:12px;height:12px;animation-delay:-19.5s;animation-duration:10s"></span><span class="bubble" style="left:14%;width:17px;height:17px;animation-delay:-20.8s;animation-duration:12s"></span><span class="bubble" style="left:27%;width:22px;height:22px;animation-delay:-22.1s;animation-duration:14s"></span>
+</div>
+
+<div class="shell">
+<header>
+  <div>
+    <h1>TEST PRACTICE UNIT 1 - TEST 3</h1>
+    <div class="meta"><b>Created by: Ms Tuyet Mai FTU</b> • Contact: 0365 423 820<br>English Practice • 40 questions • Midnight Violet Study Mode 🌙💜💙</div>
+  </div>
+  <div class="header-actions">
+    <button class="pill" id="soundBtn" aria-label="Bật hoặc tắt âm thanh">🔊 Âm thanh: Bật</button>
+    <button class="pill" onclick="window.print()">🖨️ In bài</button>
+  </div>
+</header>
+
+<div class="identity">
+  <div><label for="studentName">Họ và tên học sinh</label><input id="studentName" placeholder="Nhập họ và tên"></div>
+  <div><label for="studentClass">Lớp</label><input id="studentClass" placeholder="VD: 10A1"></div>
+  <button class="pill" id="saveIdentity">💾 Lưu thông tin</button>
+</div>
+
+<div class="stats" aria-live="polite">
+  <div class="stat">Tổng câu<b id="sTotal">40</b></div>
+  <div class="stat">Đã làm<b id="sDone">0</b></div>
+  <div class="stat">Chưa làm<b id="sLeft">40</b></div>
+  <div class="stat">Đúng lần đầu<b id="sCorrect">0</b></div>
+  <div class="stat">Sai lần đầu<b id="sWrong">0</b></div>
+  <div class="stat">Tỷ lệ đúng<b id="sRate">0%</b></div>
+  <div class="progressbar"><i id="progress"></i></div>
+</div>
+
+<nav class="section-tabs" aria-label="Chọn phần bài">
+  <button class="tab active" data-sec="1">1–6 Advertisement</button>
+  <button class="tab" data-sec="2">7–12 Leaflet</button>
+  <button class="tab" data-sec="3">13–17 Arrangement</button>
+  <button class="tab" data-sec="4">18–22 Cloze</button>
+  <button class="tab" data-sec="5">23–30 Reading 1</button>
+  <button class="tab" data-sec="6">31–40 Reading 2</button>
+</nav>
+
+<main id="main"></main>
+
+<div class="footer-tools">
+  <button class="pill" id="unfinishedBtn">↩️ Quay lại câu chưa làm</button>
+  <button class="pill" id="wrongBtn">❌ Xem câu đã sai</button>
+  <button class="pill" id="submitBtn">📩 Nộp bài & chấm điểm</button>
+  <button class="pill" id="resetBtn">🔄 Làm lại toàn bộ</button>
+  <button class="pill" id="clearBtn">🧹 Xóa dữ liệu đã lưu</button>
+</div>
+<div class="submitbox" id="submitBox"></div>
+<div class="notice"><b>Nội dung cần người dùng kiểm tra lại:</b> Không phát hiện phần câu hỏi bị thiếu trong 40 câu từ ảnh nguồn. Đáp án được xác định theo ngữ pháp, từ vựng và nội dung bài đọc.</div>
+</div>
+
+<script>
+const QUESTIONS = [{"n": 1, "section": 1, "stem": "Question 1:", "options": {"A": "who", "B": "where", "C": "when", "D": "that"}, "correct": "D", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <b>who</b>: đại từ quan hệ chỉ người; antecedent là <i>a community event</i> nên không phù hợp.</li><li><b>B.</b> <b>where</b>: trạng từ quan hệ chỉ nơi chốn; không phù hợp với <i>event</i> trong cấu trúc này.</li><li><b>C.</b> <b>when</b>: trạng từ quan hệ chỉ thời gian.</li><li><b>D.</b> <b>that</b>: đại từ quan hệ dùng cho vật/sự việc, làm chủ ngữ cho <i>brings</i>.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Hãy đến Family Fun Day, một sự kiện cộng đồng mang cha mẹ và con cái lại gần nhau qua trò chơi, âm nhạc và những trải nghiệm chung.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Sau chỗ trống là động từ <b>brings</b>, nên cần đại từ quan hệ làm chủ ngữ; danh từ trước là <b>event</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn D?</b><p><b>that</b> thay cho <i>event</i> và tạo mệnh đề quan hệ đúng: <i>an event that brings...</i></p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> <i>who</i> chỉ người.</li><li><b>B.</b> <i>where</i> chỉ nơi chốn.</li><li><b>C.</b> <i>when</i> chỉ thời gian.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Vật/sự việc + <b>that/which + V</b>; người + <b>who + V</b>.</p></div><div class=\"answer-line\">Đáp án đúng: D. that</div>"}, {"n": 2, "section": 1, "stem": "Question 2:", "options": {"A": "family outdoor activity", "B": "outdoor family activity", "C": "activity family outdoor", "D": "family activity outdoor"}, "correct": "B", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> Trật tự bổ nghĩa chưa tự nhiên.</li><li><b>B.</b> <b>outdoor family activity</b>: hoạt động gia đình ngoài trời; danh từ chính <i>activity</i> đứng cuối.</li><li><b>C.</b> Danh từ chính bị đặt đầu, sai trật tự.</li><li><b>D.</b> <i>outdoor</i> bị đặt sau danh từ chính.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Các điểm nổi bật gồm một hoạt động gia đình ngoài trời, các buổi kể chuyện và các thử thách theo đội.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Sau <b>a(n)</b> cần một cụm danh từ hoàn chỉnh; danh từ chính là <b>activity</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn B?</b><p>B là cụm tự nhiên nhất và đúng trật tự từ. </p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Trật tự từ không chuẩn.</li><li><b>C.</b> Sai vị trí danh từ chính.</li><li><b>D.</b> Sai vị trí từ bổ nghĩa.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Từ bổ nghĩa đứng trước danh từ chính: <b>outdoor family activity</b>.</p></div><div class=\"answer-line\">Đáp án đúng: B. outdoor family activity</div>"}, {"n": 3, "section": 1, "stem": "Question 3:", "options": {"A": "ought to", "B": "must", "C": "have to", "D": "will"}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <b>ought to</b>: nên, lời khuyên/khuyến nghị.</li><li><b>B.</b> <b>must</b>: phải, nghĩa vụ mạnh.</li><li><b>C.</b> <b>have to</b>: phải, bắt buộc.</li><li><b>D.</b> <b>will</b>: sẽ, tương lai.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Cha mẹ nên tham gia các hoạt động cùng con, nhưng họ không phải tham gia mọi trò chơi.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Vế sau có <b>but they do not have to join every game</b>, cho thấy đây là khuyến nghị chứ không phải bắt buộc.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p><b>ought to</b> diễn tả “nên”, đúng sắc thái. </p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>B.</b> Quá bắt buộc và mâu thuẫn với <i>do not have to</i>.</li><li><b>C.</b> Cũng mang nghĩa bắt buộc.</li><li><b>D.</b> Chỉ dự báo tương lai.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p><b>ought to + V</b> = nên làm gì; gần nghĩa <i>should</i>.</p></div><div class=\"answer-line\">Đáp án đúng: A. ought to</div>"}, {"n": 4, "section": 1, "stem": "Question 4:", "options": {"A": "aware", "B": "awareness", "C": "awarely", "D": "awarenesses"}, "correct": "B", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <b>aware</b> (adj): nhận thức được.</li><li><b>B.</b> <b>awareness</b> (n): sự nhận thức.</li><li><b>C.</b> <b>awarely</b>: không phải dạng phù hợp.</li><li><b>D.</b> <b>awarenesses</b>: số nhiều không dùng trong collocation này.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Sự kiện cũng giúp nâng cao nhận thức về tầm quan trọng của việc dành thời gian chất lượng bên nhau.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Cụm cố định là <b>raise awareness of/about</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn B?</b><p><b>awareness</b> đúng từ loại và đúng collocation. </p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Là tính từ.</li><li><b>C.</b> Sai dạng từ.</li><li><b>D.</b> Không dùng số nhiều ở đây.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p><b>raise awareness of/about</b> = nâng cao nhận thức về.</p></div><div class=\"answer-line\">Đáp án đúng: B. awareness</div>"}, {"n": 5, "section": 1, "stem": "Question 5:", "options": {"A": "with", "B": "on", "C": "for", "D": "at"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <i>grateful with</i> không phải cấu trúc chuẩn.</li><li><b>B.</b> <i>grateful on</i> không dùng.</li><li><b>C.</b> <b>grateful for + N</b>: biết ơn vì/đối với điều gì.</li><li><b>D.</b> <i>grateful at</i> không dùng.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Nhiều gia đình biết ơn vì có cơ hội kết nối lại và xây dựng các mối quan hệ bền chặt hơn.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Sau <b>grateful</b> và trước <b>the opportunity</b> cần giới từ <b>for</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>Cấu trúc chuẩn là <b>be grateful for something</b>.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Sai collocation.</li><li><b>B.</b> Sai collocation.</li><li><b>D.</b> Sai collocation.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p><b>be grateful to somebody for something</b>.</p></div><div class=\"answer-line\">Đáp án đúng: C. for</div>"}, {"n": 6, "section": 1, "stem": "Question 6:", "options": {"A": "do", "B": "give", "C": "take", "D": "make"}, "correct": "D", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <b>do</b>: làm; không đi với <i>a difference</i>.</li><li><b>B.</b> <b>give</b>: cho; không tạo collocation đúng.</li><li><b>C.</b> <b>take</b>: lấy/mang.</li><li><b>D.</b> <b>make</b>: tạo ra; <i>make a difference</i> = tạo sự khác biệt.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Hãy tham gia Chủ nhật này và tạo ra sự khác biệt trong đời sống gia đình của bạn...”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Cụm cố định là <b>make a difference</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn D?</b><p>Chỉ <b>make</b> kết hợp tự nhiên với <i>a difference</i>.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Không nói <i>do a difference</i>.</li><li><b>B.</b> Không nói <i>give a difference</i>.</li><li><b>C.</b> Không nói <i>take a difference</i>.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Collocation: <b>make a difference</b>.</p></div><div class=\"answer-line\">Đáp án đúng: D. make</div>"}, {"n": 7, "section": 2, "stem": "Question 7:", "options": {"A": "amount", "B": "number", "C": "level", "D": "range"}, "correct": "B", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <b>amount</b>: lượng, thường với danh từ không đếm được.</li><li><b>B.</b> <b>number</b>: số lượng, dùng với danh từ đếm được số nhiều.</li><li><b>C.</b> <b>level</b>: mức độ.</li><li><b>D.</b> <b>range</b>: phạm vi/dải.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Ngày càng nhiều gia đình khuyến khích con học các kỹ năng quan trọng tại nhà.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Sau chỗ trống là <b>families</b>, danh từ đếm được số nhiều; cụm chuẩn là <b>a growing number of</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn B?</b><p><b>a growing number of families</b> = số lượng gia đình ngày càng tăng.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Không dùng với danh từ đếm được số nhiều.</li><li><b>C.</b> Không tạo cụm tự nhiên.</li><li><b>D.</b> Mang nghĩa nhiều loại, không phải số lượng tăng.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p><b>a number of + N số nhiều</b>; <b>an amount of + N không đếm được</b>.</p></div><div class=\"answer-line\">Đáp án đúng: B. number</div>"}, {"n": 8, "section": 2, "stem": "Question 8:", "options": {"A": "carry on", "B": "shop for", "C": "look after", "D": "look into"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <b>carry on</b>: tiếp tục.</li><li><b>B.</b> <b>shop for</b>: mua cho.</li><li><b>C.</b> <b>look after</b>: chăm sóc.</li><li><b>D.</b> <b>look into</b>: điều tra/xem xét.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Cha mẹ cũng có thể nhờ con chăm em trai hoặc em gái trong thời gian ngắn.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Tân ngữ là <b>younger brothers or sisters</b>; cần phrasal verb mang nghĩa chăm sóc.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p><b>look after somebody</b> = chăm sóc ai.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Sai nghĩa.</li><li><b>B.</b> Không phù hợp ngữ cảnh.</li><li><b>D.</b> Nghĩa là điều tra/xem xét.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p><b>look after = take care of</b>.</p></div><div class=\"answer-line\">Đáp án đúng: C. look after</div>"}, {"n": 9, "section": 2, "stem": "Question 9:", "options": {"A": "Instead of", "B": "Through", "C": "According to", "D": "In spite of"}, "correct": "B", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <b>Instead of</b>: thay vì.</li><li><b>B.</b> <b>Through</b>: thông qua, nhờ vào.</li><li><b>C.</b> <b>According to</b>: theo như nguồn thông tin.</li><li><b>D.</b> <b>In spite of</b>: mặc dù/bất chấp.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Thông qua việc luyện tập thường xuyên tại nhà, thanh thiếu niên dần phát triển kỹ năng sống...”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p><b>regular practice at home</b> là phương thức tạo ra kết quả.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn B?</b><p><b>Through</b> diễn tả phương tiện/quá trình dẫn đến kết quả.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Không có ý thay thế.</li><li><b>C.</b> Không có nguồn thông tin.</li><li><b>D.</b> Không có quan hệ nhượng bộ.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p><b>through + N/V-ing</b> = thông qua/bằng cách.</p></div><div class=\"answer-line\">Đáp án đúng: B. Through</div>"}, {"n": 10, "section": 2, "stem": "Question 10:", "options": {"A": "The more often", "B": "More often", "C": "The most often", "D": "As often as"}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <b>The more often</b>: đúng mẫu so sánh kép.</li><li><b>B.</b> Thiếu <i>The</i> trong cấu trúc kép.</li><li><b>C.</b> So sánh nhất, không phù hợp.</li><li><b>D.</b> So sánh bằng, không khớp với <i>the fairer</i>.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Các thành viên càng thường xuyên chia sẻ việc nhà thì trách nhiệm càng được phân chia công bằng hơn.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Vế sau có <b>the fairer...</b> — dấu hiệu cấu trúc <b>The + comparative..., the + comparative...</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p>A tạo cặp đúng: <i>The more often..., the fairer...</i>.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>B.</b> Thiếu <i>The</i>.</li><li><b>C.</b> Sai cấp so sánh.</li><li><b>D.</b> Không khớp cấu trúc.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p><b>The + comparative, the + comparative</b> = càng... càng...</p></div><div class=\"answer-line\">Đáp án đúng: A. The more often</div>"}, {"n": 11, "section": 2, "stem": "Question 11:", "options": {"A": "responsibility", "B": "gratitude", "C": "respect", "D": "honesty"}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> <b>responsibility</b>: trách nhiệm; collocation <i>a sense of responsibility</i>.</li><li><b>B.</b> <b>gratitude</b>: lòng biết ơn.</li><li><b>C.</b> <b>respect</b>: sự tôn trọng.</li><li><b>D.</b> <b>honesty</b>: sự trung thực.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Người trẻ thường xuyên giúp việc nhà thường phát triển ý thức trách nhiệm mạnh hơn và học cách trân trọng sự vất vả của cha mẹ.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Đoạn trước nói việc nhà giúp teenagers become <b>more responsible</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p><b>responsibility</b> vừa đúng collocation vừa nối trực tiếp với <i>responsible</i>.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>B.</b> Có liên quan đến biết ơn nhưng không phải trọng tâm.</li><li><b>C.</b> Không nối mạnh bằng từ khóa trong đoạn.</li><li><b>D.</b> Không có bằng chứng về tính trung thực.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Word family: <b>responsible → responsibility</b>; <b>a sense of responsibility</b>.</p></div><div class=\"answer-line\">Đáp án đúng: A. responsibility</div>"}, {"n": 12, "section": 2, "stem": "Question 12:", "options": {"A": "productive", "B": "supportive", "C": "successful", "D": "tangible"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4>\n<div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b>\n<ul>\n<li><b>A. productive</b> (adj): hiệu quả, có năng suất; thường mô tả người, thời gian, công việc hoặc hoạt động tạo ra kết quả. Cụm <i>a productive future</i> có thể hiểu được nhưng không tự nhiên bằng đáp án C trong ngữ cảnh này.</li>\n<li><b>B. supportive</b> (adj): mang tính hỗ trợ, khích lệ; thường dùng với <i>family, environment, teacher, relationship</i>, không phù hợp để mô tả trực tiếp “future” ở đây.</li>\n<li><b>C. successful</b> (adj): thành công. Cụm <i>a successful and independent future</i> tự nhiên, đúng nghĩa và phù hợp với việc học kỹ năng sống từ sớm.</li>\n<li><b>D. tangible</b> (adj): hữu hình, có thể nhận thấy/chạm tới; không phù hợp với ý nghĩa của “future”.</li>\n</ul></div>\n<div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b>\n<p>“Bằng cách học những kỹ năng này từ khi còn nhỏ, thanh thiếu niên có thể hướng tới một tương lai thành công hơn và độc lập hơn.”</p></div>\n<div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b>\n<p>Đoạn văn nói về <b>life skills, responsibility, independence, time management, problem-solving</b>. Những kỹ năng đó chuẩn bị cho một tương lai <b>successful and independent</b>.</p></div>\n<div class=\"ex-step\"><b>4. Tại sao chọn C?</b>\n<p><b>successful</b> kết hợp tự nhiên với <i>future</i> và tạo cặp ý rất hợp lý với <i>independent</i>: một tương lai “thành công và tự lập”.</p></div>\n<div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b>\n<ul>\n<li><b>A.</b> <i>productive</i> thiên về năng suất/hiệu quả của người, công việc hoặc thời gian; “productive future” kém tự nhiên hơn.</li>\n<li><b>B.</b> <i>supportive future</i> không phải kết hợp từ tự nhiên trong ngữ cảnh này.</li>\n<li><b>D.</b> <i>tangible future</i> không diễn đạt ý mà đoạn văn cần.</li>\n</ul></div>\n<div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b>\n<p>Collocation tự nhiên: <b>a successful future</b> = một tương lai thành công; <b>an independent life</b> = cuộc sống tự lập.</p></div>\n<div class=\"answer-line\">Đáp án đúng: C. successful</div>"}, {"n": 13, "section": 3, "stem": "<div class=\"arrange-bank\"><p><b>a.</b> Emma: That sounds exciting. More free time must make traveling easier.</p><p><b>b.</b> Ryan: My wife and I decided not to have children, so we save money for trips instead.</p><p><b>c.</b> Ryan: I can see why many DINK couples enjoy that lifestyle.</p></div>", "options": {"A": "a – b – c", "B": "b – a – c", "C": "c – b – a", "D": "b – c – a"}, "correct": "B", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> a mở bằng <i>That</i> nhưng chưa có tiền đề.</li><li><b>B.</b> b giới thiệu lựa chọn; a phản hồi; c rút ra nhận xét về lối sống đó.</li><li><b>C.</b> c dùng <i>that lifestyle</i> trước khi lối sống được giới thiệu.</li><li><b>D.</b> Hai lượt Ryan liền nhau làm phản hồi của Emma bị đặt muộn.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>Ryan nói vợ chồng anh không có con và dành tiền cho du lịch; Emma phản hồi, rồi Ryan nhận xét vì sao nhiều cặp DINK thích lối sống đó.</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p><i>That</i> ở a và <i>that lifestyle</i> ở c đều cần tiền đề b.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn B?</b><p>B cho mạch thông tin → phản hồi → nhận xét kết.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Thiếu tiền đề.</li><li><b>C.</b> Đại từ quy chiếu xuất hiện sớm.</li><li><b>D.</b> Mạch lượt nói kém tự nhiên.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Theo dõi đại từ quy chiếu và lượt người nói.</p></div><div class=\"answer-line\">Đáp án đúng: B. b – a – c</div>"}, {"n": 14, "section": 3, "stem": "<div class=\"arrange-bank\"><p><b>a.</b> Jack: That explains why your family chat is always active.</p><p><b>b.</b> Mia: We do. Even dinner plans are shared there because everyone has different schedules.</p><p><b>c.</b> Jack: Doesn't that feel a bit unusual when you live in the same house?</p><p><b>d.</b> Mia: Not really. It helps us stay connected and organize things quickly.</p><p><b>e.</b> Jack: Do your family members really use messages to discuss most daily tasks?</p></div>", "options": {"A": "e – c – b – a – d", "B": "c – e – b – d – a", "C": "e – b – c – d – a", "D": "a – e – b – c – d"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> Hai câu hỏi e và c đứng liền trước câu trả lời.</li><li><b>B.</b> c mở bằng <i>that</i> khi chưa có tiền đề.</li><li><b>C.</b> e hỏi → b trả lời <i>We do</i> → c hỏi tiếp → d đáp <i>Not really</i> → a kết luận.</li><li><b>D.</b> a là câu kết nhưng bị đặt đầu.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>Jack hỏi về việc dùng tin nhắn; Mia xác nhận. Jack hỏi có lạ không; Mia giải thích; Jack kết luận vì thế nhóm chat luôn hoạt động.</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p><i>We do</i> trả lời e; <i>Not really</i> trả lời c; <i>That explains...</i> phù hợp đứng cuối.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C giữ đúng cặp hỏi–đáp.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Tách cặp hỏi–đáp.</li><li><b>B.</b> Thiếu tiền đề cho <i>that</i>.</li><li><b>D.</b> Đặt câu kết ở đầu.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Tìm cặp <b>Do...? → We do.</b> và <b>Doesn't...? → Not really.</b></p></div><div class=\"answer-line\">Đáp án đúng: C. e – b – c – d – a</div>"}, {"n": 15, "section": 3, "stem": "<div class=\"arrange-bank\"><p>Dear Sophie,</p><p>How have you been recently? I hope everything is going well with your studies.</p><p><b>a.</b> Living alone was challenging at first because I had to manage my budget, cooking, and laundry without help.</p><p><b>b.</b> The experience has taught me valuable life skills and made me more confident in making decisions.</p><p><b>c.</b> Last September, I moved into a small apartment near my university instead of staying with my parents.</p><p><b>d.</b> Although I miss family dinners, we still keep in touch through video calls several times a week.</p><p><b>e.</b> After a few months, I became more organized and learned how to balance study and daily responsibilities.</p><p>Best wishes,<br>Lily</p></div>", "options": {"A": "a – c – d – e – b", "B": "d – c – a – b – e", "C": "c – a – e – d – b", "D": "c – e – a – d – b"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> a nói sống một mình trước khi c giới thiệu việc chuyển ra riêng.</li><li><b>B.</b> d xuất hiện trước bối cảnh chuyển nhà.</li><li><b>C.</b> c sự kiện → a khó khăn ban đầu → e sau vài tháng → d giữ liên lạc → b tổng kết bài học.</li><li><b>D.</b> Đặt <i>After a few months</i> trước <i>at first</i>.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>Lily kể quá trình chuyển ra ở riêng, khó khăn ban đầu, thích nghi sau vài tháng, giữ liên lạc gia đình và rút ra bài học kỹ năng sống.</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Dấu hiệu: <b>Last September → at first → After a few months</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C đi đúng trình tự thời gian và kết bằng câu tổng kết.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Thiếu bối cảnh.</li><li><b>B.</b> Mở bằng chi tiết phụ.</li><li><b>D.</b> Đảo trình tự thời gian.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Với đoạn kể trải nghiệm, lần theo mốc thời gian.</p></div><div class=\"answer-line\">Đáp án đúng: C. c – a – e – d – b</div>"}, {"n": 16, "section": 3, "stem": "<div class=\"arrange-bank\"><p><b>a.</b> Many young couples today choose to spend a significant part of their income on their pets instead of planning for children.</p><p><b>b.</b> In some households, dogs are treated almost like family members, with birthdays, training classes, and even health insurance.</p><p><b>c.</b> This lifestyle is often described as the DINKWAD trend, meaning dual income, no kids, with a dog.</p><p><b>d.</b> Supporters argue that it gives them flexibility while still allowing them to care for another living being.</p><p><b>e.</b> Critics, however, believe that pets cannot fully replace the role of children, making the trend a topic of debate.</p></div>", "options": {"A": "a – d – b – c – e", "B": "c – a – b – e – d", "C": "a – b – d – e – c", "D": "a – b – c – d – e"}, "correct": "D", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> d nêu phe ủng hộ trước khi c định nghĩa xu hướng.</li><li><b>B.</b> c mở bằng <i>This lifestyle</i> nhưng chưa có tiền đề.</li><li><b>C.</b> c định nghĩa DINKWAD quá muộn.</li><li><b>D.</b> a giới thiệu hiện tượng → b ví dụ → c gọi tên xu hướng → d ủng hộ → e phản đối.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>Đoạn giới thiệu hiện tượng chi tiền cho thú cưng, nêu ví dụ, gọi tên DINKWAD rồi trình bày hai phía tranh luận.</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p><i>This lifestyle</i> cần a/b; <i>Critics, however</i> phải theo quan điểm ủng hộ d.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn D?</b><p>D có cấu trúc chuẩn: hiện tượng → ví dụ → thuật ngữ → tranh luận hai phía.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Tranh luận trước định nghĩa.</li><li><b>B.</b> Thiếu tiền đề.</li><li><b>C.</b> Định nghĩa xuất hiện cuối.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Đoạn giới thiệu xu hướng thường đi: hiện tượng → ví dụ → thuật ngữ → đánh giá.</p></div><div class=\"answer-line\">Đáp án đúng: D. a – b – c – d – e</div>"}, {"n": 17, "section": 3, "stem": "<div class=\"arrange-bank\"><p><b>a.</b> After considering different options, she decided to raise a child independently and carefully prepared for the responsibilities ahead.</p><p><b>b.</b> As society has become more open-minded, people increasingly accept different family structures and personal choices.</p><p><b>c.</b> One example is single parenthood by choice, where an individual chooses to become a parent without following the traditional path of marriage.</p><p><b>d.</b> Although the journey can be demanding emotionally and financially, many single parents build strong support networks among relatives and friends.</p><p><b>e.</b> Their experiences show that a caring and stable environment can be created in many forms, not only within conventional families.</p></div>", "options": {"A": "c – a – d – b – e", "B": "b – d – c – a – e", "C": "b – c – a – d – e", "D": "b – a – c – e – d"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> Câu khái quát b bị đặt gần cuối.</li><li><b>B.</b> d dùng <i>the journey</i> trước khi hành trình được giới thiệu.</li><li><b>C.</b> b khái quát → c ví dụ → a quyết định → d khó khăn/hỗ trợ → e kết luận.</li><li><b>D.</b> a dùng <i>she</i> trước khi có tiền đề và e kết luận quá sớm.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>Xã hội chấp nhận nhiều cấu trúc gia đình; một ví dụ là single parenthood by choice; người lựa chọn chuẩn bị trách nhiệm, đối mặt khó khăn và xây mạng lưới hỗ trợ; cuối cùng rút ra kết luận.</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p><i>One example</i> cần b; <i>the journey</i> cần c/a; <i>Their experiences</i> phù hợp làm kết luận.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C là chuỗi logic nhất.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Câu nền bị đặt muộn.</li><li><b>B.</b> Thiếu tiền đề cho <i>the journey</i>.</li><li><b>D.</b> Đại từ và kết luận bị đảo.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Theo dõi từ nối: <i>One example, Although, Their experiences</i>.</p></div><div class=\"answer-line\">Đáp án đúng: C. b – c – a – d – e</div>"}, {"n": 18, "section": 4, "stem": "Question 18:", "options": {"A": "a child may assume that work matters more than family time", "B": "the parent may assume the child values work more than family time", "C": "work may be assumed to matter more than any family routine", "D": "quality time may seem less valuable than a parent’s career"}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> Chủ ngữ <b>a child</b> hợp với cụm mở đầu <i>Seeing a parent...</i>.</li><li><b>B.</b> Chủ ngữ là parent nên sai logic với người “seeing a parent”.</li><li><b>C.</b> Bị động làm mất chủ thể người quan sát.</li><li><b>D.</b> <i>quality time</i> không thể là người thực hiện hành động <i>Seeing</i>.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Khi nhìn thấy một phụ huynh luôn bận rộn, một đứa trẻ có thể cho rằng công việc quan trọng hơn thời gian gia đình.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Cụm V-ing đầu câu phải có chủ thể ngầm trùng với chủ ngữ mệnh đề chính.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p>Chỉ A có chủ ngữ <b>a child</b> hợp logic.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>B.</b> Sai chủ thể.</li><li><b>C.</b> Không có chủ thể người quan sát rõ ràng.</li><li><b>D.</b> Gây dangling modifier.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Tránh <b>dangling participle</b>: chủ ngữ sau dấu phẩy phải thực hiện hành động trong cụm V-ing đầu câu.</p></div><div class=\"answer-line\">Đáp án đúng: A. a child may assume that work matters more than family time</div>"}, {"n": 19, "section": 4, "stem": "Question 19:", "options": {"A": "That is only a clue, not the whole meaning of the absence", "B": "That proves the parent has chosen work over every family value", "C": "The absence tells children exactly how much support they receive", "D": "The hurried meal matters less than the parent’s public success"}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> Phù hợp ý “visible tiredness tells only part of the story”.</li><li><b>B.</b> Kết luận tuyệt đối và không được bài hỗ trợ.</li><li><b>C.</b> Trái ý: sự vắng mặt không cho biết chính xác toàn bộ câu chuyện.</li><li><b>D.</b> So sánh không phải luận điểm đoạn.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Đó chỉ là một dấu hiệu, không phải toàn bộ ý nghĩa của sự vắng mặt ấy.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Đoạn trước nhấn mạnh cái trẻ nhìn thấy chỉ là <b>part of the story</b>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p>A nối đúng mạch “biểu hiện bên ngoài không kể hết câu chuyện”.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>B.</b> Suy diễn quá mức.</li><li><b>C.</b> Trái với <i>only part of the story</i>.</li><li><b>D.</b> Không liên kết logic.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Với câu điền cả câu, kiểm tra mạch ý giữa câu trước và câu sau.</p></div><div class=\"answer-line\">Đáp án đúng: A. That is only a clue, not the whole meaning of the absence</div>"}, {"n": 20, "section": 4, "stem": "Question 20:", "options": {"A": "because extra income can replace the need for family support", "B": "unless time and attention are no longer part of care", "C": "but it is also a struggle over time and attention", "D": "rather than something connected to household responsibilities"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> Trái câu sau: tiền không tự xây family bond.</li><li><b>B.</b> Quan hệ điều kiện không phù hợp.</li><li><b>C.</b> <b>but</b> bổ sung mặt khác của áp lực: thời gian và sự chú ý.</li><li><b>D.</b> Trái với đoạn sau nói về household tasks.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Áp lực thường được mô tả như vấn đề tiền bạc, nhưng nó cũng là cuộc vật lộn về thời gian và sự quan tâm.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Câu sau đối chiếu lương cao với family bond đến từ listening, chores, promises.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C mở đúng hướng cho lập luận “không chỉ là tiền”.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Trái bài.</li><li><b>B.</b> Sai logic.</li><li><b>D.</b> Trái thông tin về trách nhiệm gia đình.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p><b>but</b> dùng để điều chỉnh một quan niệm chưa đầy đủ.</p></div><div class=\"answer-line\">Đáp án đúng: C. but it is also a struggle over time and attention</div>"}, {"n": 21, "section": 4, "stem": "Question 21:", "options": {"A": "This means breadwinners should stop trying to achieve financial success", "B": "Such distance proves that household tasks are more valuable than income", "C": "What helps is a shared routine that makes care visible again", "D": "The real solution is to praise work without changing family routines"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> Quá cực đoan; tác giả không yêu cầu ngừng cố gắng tài chính.</li><li><b>B.</b> Không có so sánh tuyệt đối giữa việc nhà và thu nhập.</li><li><b>C.</b> Đưa giải pháp hợp lý sau vấn đề “hard work may begin to look like distance”.</li><li><b>D.</b> Không giải quyết nguyên nhân và trái lời khuyên cuối đoạn.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Điều có ích là một nếp sinh hoạt chung khiến sự quan tâm trở nên hữu hình trở lại.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Ngay trước là vấn đề hard work bị nhìn thành distance; sau đó là lời khuyên phân biệt providing và being present.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C tạo cầu nối vấn đề → giải pháp.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Quá cực đoan.</li><li><b>B.</b> Không được bài nêu.</li><li><b>D.</b> Không thay đổi tình huống gây vấn đề.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p>Câu giải pháp phải nối trực tiếp với vấn đề trước và lời khuyên sau.</p></div><div class=\"answer-line\">Đáp án đúng: C. What helps is a shared routine that makes care visible again</div>"}, {"n": 22, "section": 4, "stem": "Question 22:", "options": {"A": "for providing for children to be distinguished from family presence", "B": "to distinguish between providing for children and being present with them", "C": "that providing for children distinguishes itself from being present", "D": "providing for children and being present distinguish themselves clearly"}, "correct": "B", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích từ vựng / cấu trúc 4 đáp án</b><ul><li><b>A.</b> Sai cấu trúc sau <i>be careful</i>.</li><li><b>B.</b> Đúng <b>be careful to + V</b> và <b>distinguish between A and B</b>.</li><li><b>C.</b> Diễn đạt không tự nhiên và sai logic.</li><li><b>D.</b> Thiếu <i>to</i> và cấu trúc không hoàn chỉnh.</li></ul></div><div class=\"ex-step\"><b>2. Dịch nghĩa toàn câu / ngữ cảnh</b><p>“Các gia đình nên cẩn thận phân biệt giữa việc chu cấp cho con và việc hiện diện bên con.”</p></div><div class=\"ex-step\"><b>3. Từ khóa hoặc dấu hiệu</b><p>Trước chỗ trống là <b>families should be careful</b>; sau đó cần to-infinitive.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn B?</b><p>B đúng cả cấu trúc và thông điệp.</p></div><div class=\"ex-step\"><b>5. Tại sao không chọn các đáp án còn lại?</b><ul><li><b>A.</b> Sai cấu trúc.</li><li><b>C.</b> Sai diễn đạt.</li><li><b>D.</b> Thiếu cấu trúc sau <i>be careful</i>.</li></ul></div><div class=\"ex-step\"><b>6. Kiến thức cần nhớ</b><p><b>be careful to do sth</b>; <b>distinguish between A and B</b>.</p></div><div class=\"answer-line\">Đáp án đúng: B. to distinguish between providing for children and being present with them</div>"}, {"n": 23, "section": 5, "stem": "Question 23: In paragraph 1, the writer is ______.", "options": {"A": "defending the decline of traditional family duties", "B": "comparing family support with personal independence", "C": "introducing a shift in how young people define family support", "D": "explaining why young adults stop returning home"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Sai: không bảo vệ sự suy giảm nghĩa vụ truyền thống.</li><li><b>B.</b> Có liên quan nhưng không phải mục đích chính.</li><li><b>C.</b> Đúng: đoạn đối chiếu cách nhìn cũ với cách người trẻ ngày nay định nghĩa family support.</li><li><b>D.</b> Sai: đoạn nói gia đình là nơi để trở về, không nói người trẻ ngừng trở về.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Ở đoạn 1, tác giả đang làm gì?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>What has changed recently is not young people’s need for family support, but how they define it.</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C diễn đạt đúng mục đích chính của đoạn.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: C. introducing a shift in how young people define family support</div>"}, {"n": 24, "section": 5, "stem": "Question 24: The word them in paragraph 2 refers to ______.", "options": {"A": "young adults", "B": "their parents", "C": "family bonds", "D": "traditional values"}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Đúng: danh từ gần trước là <i>Young adults</i>.</li><li><b>B.</b> Không có parents làm tiền đề trực tiếp.</li><li><b>C.</b> Family bonds không thể là chủ thể của <i>do not wish</i>.</li><li><b>D.</b> Traditional values không phải người.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Từ <i>them</i> ở đoạn 2 thay cho đối tượng nào?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>Young adults who move away... Yet many of <b>them</b> do not wish to reject their families.</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p><b>them = young adults</b> cả về số và nghĩa.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đại từ quy chiếu phải phù hợp về số, loại đối tượng và vai trò nghĩa.</p></div><div class=\"answer-line\">Đáp án đúng: A. young adults</div>"}, {"n": 25, "section": 5, "stem": "Question 25: Which of the following best paraphrases the underlined sentence in paragraph 2?", "options": {"A": "Young people create space to avoid duties, not to reshape family ties.", "B": "Young people move away to prove independence, not to seek family support.", "C": "Young people keep distance to ease family pressure, not to reject family life.", "D": "Young people leave home to end family ties, not to reduce pressure."}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Sai: câu gốc không nói họ tạo khoảng cách để tránh nghĩa vụ.</li><li><b>B.</b> Sai: mục đích không phải chứng minh độc lập.</li><li><b>C.</b> Đúng: giữ khoảng cách để quan hệ bớt nặng nề, không phải từ chối gia đình.</li><li><b>D.</b> Trái hẳn ý “less a refusal of family life”.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Phương án nào diễn đạt lại đúng nhất câu gạch chân ở đoạn 2?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>The distance they create is therefore less a refusal of family life than an attempt to make family relationships feel less burdensome.</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C giữ đúng hai vế: distance ≠ rejection; distance = reducing burden/pressure.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Paraphrase phải giữ nguyên quan hệ phủ định/khẳng định của câu gốc.</p></div><div class=\"answer-line\">Đáp án đúng: C. Young people keep distance to ease family pressure, not to reject family life.</div>"}, {"n": 26, "section": 5, "stem": "Question 26: The word constant in paragraph 3 is closest in meaning to ______.", "options": {"A": "limited", "B": "formal", "C": "private", "D": "continuous"}, "correct": "D", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> <b>limited</b>: hạn chế.</li><li><b>B.</b> <b>formal</b>: chính thức/trang trọng.</li><li><b>C.</b> <b>private</b>: riêng tư.</li><li><b>D.</b> <b>continuous</b>: liên tục, thường xuyên không ngừng.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Từ <i>constant</i> ở đoạn 3 gần nghĩa nhất với từ nào?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>A supportive family may not require daily presence, shared meals, or <b>constant</b> agreement.</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn D?</b><p>Trong ngữ cảnh này, <b>constant = continuous</b>.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Với từ đồng nghĩa, thay từng từ vào đúng câu gốc để kiểm tra sắc thái.</p></div><div class=\"answer-line\">Đáp án đúng: D. continuous</div>"}, {"n": 27, "section": 5, "stem": "Question 27: The word one-sided in paragraph 4 is OPPOSITE in meaning to ______.", "options": {"A": "balanced", "B": "personal", "C": "simple", "D": "distant"}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> <b>balanced</b>: cân bằng, từ hai phía — đối nghĩa trực tiếp.</li><li><b>B.</b> <b>personal</b>: cá nhân.</li><li><b>C.</b> <b>simple</b>: đơn giản.</li><li><b>D.</b> <b>distant</b>: xa cách.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Từ <i>one-sided</i> ở đoạn 4 TRÁI NGHĨA với từ nào?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>family support may become one-sided</i> = sự hỗ trợ có thể chỉ đi theo một chiều, thiếu cân bằng.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p>Đối nghĩa tự nhiên nhất là <b>balanced</b>.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Cặp nghĩa: <b>one-sided ↔ balanced/mutual</b>.</p></div><div class=\"answer-line\">Đáp án đúng: A. balanced</div>"}, {"n": 28, "section": 5, "stem": "Question 28: Which of the following statements would the writer NOT agree with?", "options": {"A": "Young people may still value family support while living away from home.", "B": "Care may harm family bonds when it becomes a form of control.", "C": "Personal freedom should excuse people from family responsibilities.", "D": "Family closeness does not always require daily physical presence."}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Phù hợp với đoạn 1–2.</li><li><b>B.</b> Phù hợp với ý không biến care thành control.</li><li><b>C.</b> Không phù hợp: đoạn 4 cảnh báo personal freedom không nên trở thành cái cớ tránh mọi nghĩa vụ.</li><li><b>D.</b> Phù hợp: supportive family may not require daily presence.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Tác giả sẽ KHÔNG đồng ý với phát biểu nào?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>If personal freedom becomes an excuse to avoid every duty, family support may become one-sided.</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C đảo ngược cảnh báo của tác giả nên là ý tác giả không đồng ý.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Với câu NOT, tìm ba ý được bài hỗ trợ trước rồi chọn ý còn lại.</p></div><div class=\"answer-line\">Đáp án đúng: C. Personal freedom should excuse people from family responsibilities.</div>"}, {"n": 29, "section": 5, "stem": "Question 29: In which paragraph does the writer mention the possible danger of misunderstanding personal freedom?", "options": {"A": "Paragraph 1", "B": "Paragraph 2", "C": "Paragraph 3", "D": "Paragraph 4"}, "correct": "D", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Đoạn 1: thay đổi cách định nghĩa family support.</li><li><b>B.</b> Đoạn 2: khoảng cách không phải từ chối gia đình.</li><li><b>C.</b> Đoạn 3: lợi ích của temporary distance.</li><li><b>D.</b> Đoạn 4: cảnh báo personal freedom có thể trở thành excuse to avoid every duty.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Tác giả đề cập nguy cơ hiểu sai tự do cá nhân ở đoạn nào?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p>Cụm <b>personal freedom</b> xuất hiện trực tiếp trong đoạn 4 cùng lời cảnh báo.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn D?</b><p>D là vị trí chính xác.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: D. Paragraph 4</div>"}, {"n": 30, "section": 5, "stem": "Question 30: In which paragraph does the writer explain why temporary distance may improve family relationships?", "options": {"A": "Paragraph 1", "B": "Paragraph 2", "C": "Paragraph 3", "D": "Paragraph 4"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Đoạn 1 chỉ giới thiệu cách nhìn mới.</li><li><b>B.</b> Đoạn 2 nói về việc sống xa nhưng chưa giải thích đầy đủ lợi ích.</li><li><b>C.</b> Đúng: đoạn 3 nêu temporary distance can strengthen family bonds và giải thích bằng <i>because</i>.</li><li><b>D.</b> Đoạn 4 tập trung vào rủi ro.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Tác giả giải thích vì sao khoảng cách tạm thời có thể cải thiện quan hệ gia đình ở đoạn nào?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>temporary distance can strengthen family bonds because it lets members appreciate one another without turning care into control.</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C chứa cả hiện tượng và nguyên nhân giải thích.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: C. Paragraph 3</div>"}, {"n": 31, "section": 6, "stem": "Question 31: According to paragraph 1, family group chats have mainly changed family decisions by ______.", "options": {"A": "removing the need for family support in daily life", "B": "giving young members full control over family duties", "C": "moving family discussions into a faster online space", "D": "turning every family decision into a personal choice"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Sai: group chat không loại bỏ nhu cầu hỗ trợ gia đình.</li><li><b>B.</b> Sai: không nói người trẻ có toàn quyền.</li><li><b>C.</b> Đúng: thảo luận chuyển từ bữa gặp trực tiếp sang phone, messages, voice notes, polls trong vài giây.</li><li><b>D.</b> Sai: vẫn là quyết định gia đình.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Theo đoạn 1, nhóm chat gia đình chủ yếu đã thay đổi việc ra quyết định bằng cách nào?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>A question that once waited for a weekend meal can now appear on everyone’s phone in seconds...</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C tóm đúng thay đổi về không gian và tốc độ thảo luận.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: C. moving family discussions into a faster online space</div>"}, {"n": 32, "section": 6, "stem": "Question 32: The word arena in paragraph 1 is closest in meaning to ______.", "options": {"A": "setting", "B": "burden", "C": "routine", "D": "message"}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> <b>setting</b>: bối cảnh/không gian hoạt động.</li><li><b>B.</b> <b>burden</b>: gánh nặng.</li><li><b>C.</b> <b>routine</b>: thói quen/quy trình.</li><li><b>D.</b> <b>message</b>: tin nhắn.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Từ <i>arena</i> trong đoạn 1 gần nghĩa nhất với từ nào?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>the group chat has become a new arena for family decisions</i> = nhóm chat trở thành một không gian/bối cảnh mới cho việc ra quyết định.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p><b>setting</b> gần nghĩa nhất với <i>arena</i> trong cách dùng ẩn dụ.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Không lấy nghĩa đen “đấu trường”; đọc theo ngữ cảnh.</p></div><div class=\"answer-line\">Đáp án đúng: A. setting</div>"}, {"n": 33, "section": 6, "stem": "Question 33: Which of the following is NOT implied in paragraph 2?", "options": {"A": "A relative living away can still offer practical help.", "B": "Online spaces may help quiet teenagers express opinions.", "C": "Family chats can make small acts of care more visible.", "D": "Frequent online replies prove a person’s deeper responsibility."}, "correct": "D", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Có: son away on business can still help make a grocery list.</li><li><b>B.</b> Có: teenager nói ít ở bàn ăn có thể bày tỏ online dễ hơn.</li><li><b>C.</b> Có: small acts of care có thể được recorded and appreciated.</li><li><b>D.</b> Không: đoạn 2 không nói trả lời thường xuyên chứng minh trách nhiệm sâu hơn.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Ý nào KHÔNG được hàm ý trong đoạn 2?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p>Ba ý A–C đều có ví dụ trực tiếp trong đoạn 2; D là suy diễn thêm.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn D?</b><p>D không được đoạn 2 hỗ trợ.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: D. Frequent online replies prove a person’s deeper responsibility.</div>"}, {"n": 34, "section": 6, "stem": "Question 34: Where in paragraph 3 does the following sentence best fit?<br><span class=\"insert-sentence\">This is where a tool designed to include everyone may begin to narrow the discussion.</span>", "options": {"A": "[I]", "B": "[II]", "C": "[III]", "D": "[IV]"}, "correct": "B", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> [I]: sau câu chủ đề hidden cost nhưng chưa có giải thích cơ chế shortcut.</li><li><b>B.</b> [II]: phù hợp nhất; câu trước nói shortcut làm mất tone, hesitation, explanation; câu chèn khái quát hệ quả rồi câu sau đưa ví dụ poll.</li><li><b>C.</b> [III]: chen câu khái quát giữa hai ví dụ.</li><li><b>D.</b> [IV]: quá muộn, sát câu kết nên mạch yếu.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Câu “Đây là lúc một công cụ được thiết kế để bao gồm mọi người có thể bắt đầu thu hẹp cuộc thảo luận” nên đặt ở đâu?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p>Trình tự hợp lý: hidden cost → shortcut mất sắc thái → câu chèn khái quát → ví dụ poll/người online → kết quả.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn B?</b><p>Vị trí [II] nối tốt nhất câu trước và ví dụ sau.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Sentence insertion: xác định chức năng câu chèn và kiểm tra cả câu trước lẫn câu sau.</p></div><div class=\"answer-line\">Đáp án đúng: B. [II]</div>"}, {"n": 35, "section": 6, "stem": "Question 35: The word They in paragraph 4 refers to ______.", "options": {"A": "family values", "B": "simple arrangements", "C": "family chats", "D": "ordinary moments"}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Family values xuất hiện về sau.</li><li><b>B.</b> Simple arrangements đứng sau <i>They</i>.</li><li><b>C.</b> Đúng: câu trước nói <i>family chats</i>; câu sau <i>They are useful...</i>.</li><li><b>D.</b> Ordinary moments không phải antecedent gần.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Từ <i>They</i> ở đoạn 4 thay cho đối tượng nào?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>The point is not that <b>family chats</b> should be avoided. <b>They</b> are useful...</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>They thay trực tiếp cho family chats.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: C. family chats</div>"}, {"n": 36, "section": 6, "stem": "Question 36: Which of the following best paraphrases the underlined sentence in paragraph 4?", "options": {"A": "Families should ask whether serious issues lose too much when handled through chat.", "B": "Families should use chats only when all silent members have already agreed.", "C": "Family chats are beneficial because they remove silence from difficult matters.", "D": "Serious decisions should be delayed until every family member replies online."}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Đúng: cần hỏi liệu vấn đề nghiêm túc có mất quá nhiều sắc thái khi xử lý qua chat hay không.</li><li><b>B.</b> Sai: bài không đặt điều kiện mọi người im lặng đã đồng ý.</li><li><b>C.</b> Trái nghĩa: chat có thể bỏ sót phần “silence”.</li><li><b>D.</b> Sai: không yêu cầu trì hoãn đến khi mọi người trả lời.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Phương án nào diễn đạt lại tốt nhất câu gạch chân ở đoạn 4?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>The question is not whether family chats bring benefits, but whether the matter at hand can afford the silence they leave out.</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p>A giữ đúng trọng tâm: lợi ích có thật nhưng phải cân nhắc phần bị mất với vấn đề nghiêm túc.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: A. Families should ask whether serious issues lose too much when handled through chat.</div>"}, {"n": 37, "section": 6, "stem": "Question 37: Which of the following best summarises paragraph 3?", "options": {"A": "Online polls help families divide duties more equally than direct meetings.", "B": "Fast replies show which relatives are most trusted in family decisions.", "C": "Family chats are harmful mainly because elderly people cannot use them.", "D": "Quick online decisions may hide pressure, silence and unequal influence."}, "correct": "D", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Sai: poll không được nói là công bằng hơn.</li><li><b>B.</b> Sai: người xuất hiện trước có thể có ảnh hưởng không vì được tin hơn.</li><li><b>C.</b> Sai: đoạn không tập trung vào người già không dùng chat.</li><li><b>D.</b> Đúng: hidden cost gồm áp lực, phần bị im lặng/bỏ sót và ảnh hưởng không cân bằng.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Phương án nào tóm tắt tốt nhất đoạn 3?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p>Từ khóa: <i>hidden cost, pressured to agree, quiet decision-maker, losing part of the conversation</i>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn D?</b><p>D bao quát toàn bộ đoạn.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: D. Quick online decisions may hide pressure, silence and unequal influence.</div>"}, {"n": 38, "section": 6, "stem": "Question 38: What can be inferred from paragraph 4?", "options": {"A": "Families should choose the way they discuss an issue according to its seriousness.", "B": "Families should not treat fast online replies as the same as thoughtful agreement.", "C": "Quick online agreement may be acceptable if most family members have replied.", "D": "Serious family matters should be discussed online before being raised directly."}, "correct": "A", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Đúng: chat phù hợp việc đơn giản; với money, long-term care, family values thì speed không phải thước đo duy nhất.</li><li><b>B.</b> Hợp một phần nhưng hẹp hơn ý khái quát của đoạn.</li><li><b>C.</b> Sai: đa số trả lời không bảo đảm chất lượng quyết định.</li><li><b>D.</b> Sai: không nói vấn đề nghiêm túc phải thảo luận online trước.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Có thể suy ra điều gì từ đoạn 4?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p>Đoạn phân biệt <i>simple arrangements</i> với quyết định liên quan <i>money, long-term care or family values</i>.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn A?</b><p>Suy ra gia đình nên chọn cách thảo luận theo mức độ nghiêm trọng của vấn đề.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: A. Families should choose the way they discuss an issue according to its seriousness.</div>"}, {"n": 39, "section": 6, "stem": "Question 39: Which of the following is TRUE according to the passage?", "options": {"A": "Group chats make family meetings unnecessary in most situations.", "B": "Online polls can always show whether people agree freely.", "C": "Group chats may help family support continue across distance.", "D": "Elderly parents are usually excluded from online decisions."}, "correct": "C", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Sai: bài không nói group chat thay thế phần lớn cuộc gặp.</li><li><b>B.</b> Sai: poll không thể cho biết ai bị áp lực phải đồng ý.</li><li><b>C.</b> Đúng: đoạn 2 nói group chat giúp support continue across distance.</li><li><b>D.</b> Sai: không có thông tin người già thường bị loại khỏi quyết định.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Phát biểu nào ĐÚNG theo bài đọc?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p><i>the group chat can strengthen family bonds by allowing support to continue across distance.</i></p></div><div class=\"ex-step\"><b>4. Tại sao chọn C?</b><p>C gần như paraphrase trực tiếp câu trong đoạn 2.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Đọc đúng phạm vi bằng chứng trong bài và không suy diễn vượt quá thông tin tác giả cung cấp.</p></div><div class=\"answer-line\">Đáp án đúng: C. Group chats may help family support continue across distance.</div>"}, {"n": 40, "section": 6, "stem": "Question 40: Which of the following would be the best title for the passage?", "options": {"A": "The Decline of Respect in Modern Family Life", "B": "Family Group Chats: Quick Support and Hidden Costs", "C": "Why Online Polls Should Replace Family Meetings", "D": "How Teenagers Control Family Decisions Online"}, "correct": "B", "explanation": "<h4>PHẦN GIẢI THÍCH CHI TIẾT</h4><div class=\"ex-step\"><b>1. Phân tích 4 đáp án</b><ul><li><b>A.</b> Quá tiêu cực và không phản ánh lợi ích của group chat.</li><li><b>B.</b> Đúng: bao quát hai mặt — hỗ trợ nhanh/tiện lợi và hidden costs.</li><li><b>C.</b> Trái bài: tác giả cảnh báo giới hạn của polls.</li><li><b>D.</b> Quá hẹp và sai trọng tâm.</li></ul></div><div class=\"ex-step\"><b>2. Dịch câu hỏi</b><p>Nhan đề nào phù hợp nhất cho bài đọc?</p></div><div class=\"ex-step\"><b>3. Bằng chứng trong bài</b><p>Đoạn 1–2 nêu tiện lợi/lợi ích; đoạn 3–4 nêu hidden cost và giới hạn.</p></div><div class=\"ex-step\"><b>4. Tại sao chọn B?</b><p>B phản ánh chính xác cấu trúc cân bằng của toàn bài.</p></div><div class=\"ex-step\"><b>5. Kiến thức / chiến thuật cần nhớ</b><p>Best title phải bao quát toàn bài, không chỉ một chi tiết.</p></div><div class=\"answer-line\">Đáp án đúng: B. Family Group Chats: Quick Support and Hidden Costs</div>"}];
+const SOURCES = {"1": "<div class=\"paper-instruction\">Read the following advertisement and mark the letter A, B, C, or D on your answer sheet to indicate the option that best fits each of the numbered blanks from 1 to 6.</div><h2>Family Fun Day – Celebrate the Moments That Matter!</h2><p>Looking for a meaningful weekend activity? Come to Family Fun Day, a community event <b>(1) ______</b> brings parents and children together through games, music, and shared experiences. Visitors can enjoy a variety of activities designed to strengthen family bonds and create lasting memories.</p><p>Highlights include a(n) <b>(2) ______</b> for families, storytelling sessions, and team challenges.</p><p>Parents <b>(3) ______</b> take part in activities with their children, but they do not have to join every game, while teenagers can learn useful life skills through friendly competitions. The event also helps raise <b>(4) ______</b> of the importance of spending quality time together. Many families are grateful <b>(5) ______</b> the opportunity to reconnect and build stronger relationships.</p><p>Join us this Sunday and <b>(6) ______</b> a difference in your family life through laughter, teamwork, and unforgettable moments!</p>", "2": "<div class=\"paper-instruction\">Read the following leaflet and mark the letter A, B, C or D on your answer sheet to indicate the option that best fits each of the numbered blanks from 7 to 12.</div><h2>Learning Life Skills at Home</h2><h3>Build Good Habits Early</h3><p>Many teenagers believe that life skills are learned only at school. However, a growing <b>(7) ______</b> of families now encourage their children to learn important skills at home. Simple household chores such as cooking meals, doing the laundry, and washing up help teenagers become more responsible and independent.</p><h3>Learn Through Daily Tasks</h3><p>Parents can also ask children to <b>(8) ______</b> younger brothers or sisters for short periods. This teaches patience, care, and a sense of duty. <b>(9) ______</b> regular practice at home, teenagers gradually develop life skills such as time management and problem-solving. <b>(10) ______</b> family members share household tasks, the fairer responsibilities become.</p><h3>Prepare for Adult Life</h3><p>Doing household chores is also a good way to build character and strengthen family bonds. Young people who regularly help at home often develop a stronger sense of <b>(11) ______</b> and learn to appreciate their parents' hard work. By learning these skills from an early age, teenagers can enjoy a more <b>(12) ______</b> and independent future.</p>", "4": "<div class=\"paper-instruction\">Read the following passage and mark the letter A, B, C or D on your answer sheet to indicate the option that best fits each of the numbered blanks from 18 to 22.</div><h2>The Breadwinner Pressure</h2><p>At 7:20 p.m., Mr Lam comes home with a bag of groceries in one hand and a work message flashing on his phone. Seeing a parent who is always busy, <b>(18) ______</b>. Yet the visible tiredness tells only part of the story. Some parents accept extra shifts because the rent is due; others stay online after dinner because they fear that refusing one more task may cost the family stability. What the child sees is a missed game or a hurried meal. <b>(19) ______</b>.</p><p>The pressure is often described as a problem of money, <b>(20) ______</b>. A larger paycheck can pay for classes and food, but it cannot automatically build the family bond that comes from listening, sharing chores and keeping small promises. When household tasks fall on one person, even the breadwinner’s hard work may begin to look like distance instead of support. <b>(21) ______</b>.</p><p>For this reason, families should be careful <b>(22) ______</b>. The goal is not to blame parents for working hard, nor to pretend that bills will wait. It is to divide responsibility more honestly, appreciate effort more openly and protect quality time before it disappears into another urgent message.</p>", "5": "<div class=\"paper-instruction\">Read the passage and mark the letter A, B, C or D on your answer sheet to indicate the best answer to each of the following questions from 23 to 30.</div><h2>Family as a Place to Return To</h2><p><b>1.</b> For generations, family life was seen as a fixed centre for organising personal choices. Children were expected to stay close and carry on duties passed down as traditional family values. What has changed recently is not young people’s need for family support, but how they define it. To many of them, family is less a permanent address than a place to return to when life becomes demanding.</p><p><b>2.</b> This shift can easily be mistaken for selfishness. Young adults who move away for study or work are sometimes criticised for weakening family bonds. Yet many of <u><b>them</b></u> do not wish to reject their families. Instead, they are trying to build adult lives in which responsibility is chosen rather than inherited. <u><b>The distance they create is therefore less a refusal of family life than an attempt to make family relationships feel less burdensome.</b></u></p><p><b>3.</b> Seeing family as a “resting station” does not mean young people return home only when they need help. Rather, home is valuable when it gives people strength to continue. A supportive family may not require daily presence, shared meals, or <u><b>constant</b></u> agreement. It may offer trust, respect, and understanding. In this sense, temporary distance can strengthen family bonds because it lets members appreciate one another without turning care into control.</p><p><b>4.</b> It would be misleading to claim that this view has no risks. If personal freedom becomes an excuse to avoid every duty, family support may become <u><b>one-sided</b></u>. Older people may feel forgotten, and younger people may lose experience that close relationships provide. The deeper question is not whether young people should stay or leave, but how families can remain caring while allowing each member enough space to grow.</p>", "6": "<div class=\"paper-instruction\">Read the passage and mark the letter A, B, C or D on your answer sheet to indicate the best answer to each of the following questions from 31 to 40.</div><p><b>1.</b> In many modern families, the group chat has become a new <u><b>arena</b></u> for family decisions. A question that once waited for a weekend meal can now appear on everyone’s phone in seconds: Who is responsible for taking an elderly parent to hospital? How should household tasks be divided before relatives visit? What should be bought for a family celebration? Instead of gathering in one room, family members now exchange opinions through short messages, voice notes and quick polls.</p><p><b>2.</b> This change is not merely convenient. It can bring family support into ordinary moments. A son away on business can still help make a list of groceries. A teenager who says little at dinner may express an opinion more easily online. Small acts of care, once invisible, may be recorded and appreciated. In this sense, the group chat can strengthen family bonds by allowing support to continue across distance.</p><p><b>3.</b> But online discussion has its own hidden cost. <b>[I]</b> Every shortcut saves time by giving up something else: tone, hesitation and patient explanation. <b>[II]</b> A poll about who should take care of an elderly parent may record a majority choice, yet it cannot show who felt pressured to agree. <b>[III]</b> The member who is always online may become a quiet decision-maker, not because others trust him more, but because he appears first on the screen. <b>[IV]</b> The family may therefore achieve a result while losing part of the conversation.</p><p><b>4.</b> The point is not that family chats should be avoided. <u><b>They</b></u> are useful for simple arrangements, such as choosing a meeting time or reminding someone to buy groceries. However, when a decision involves money, long-term care or family values, speed is not the only measure of success. <u><b>The question is not whether family chats bring benefits, but whether the matter at hand can afford the silence they leave out.</b></u></p>"};
+const VOCAB = {"4": [["breadwinner", "n"], ["groceries", "n"], ["visible tiredness", "phrase"], ["extra shift", "phrase"], ["rent is due", "phrase"], ["family stability", "phrase"], ["hurried meal", "phrase"], ["paycheck", "n"], ["family bond", "phrase"], ["household task", "phrase"], ["distinguish between", "phrase"], ["quality time", "phrase"]], "5": [["fixed centre", "phrase"], ["traditional family values", "phrase"], ["demanding", "adj"], ["selfishness", "n"], ["criticise", "v"], ["inherited", "adj/V3"], ["burdensome", "adj"], ["resting station", "phrase"], ["constant", "adj"], ["temporary distance", "phrase"], ["one-sided", "adj"], ["personal freedom", "phrase"], ["family responsibility", "phrase"]], "6": [["arena", "n"], ["elderly parent", "phrase"], ["household task", "phrase"], ["voice note", "phrase"], ["ordinary moments", "phrase"], ["practical help", "phrase"], ["hidden cost", "phrase"], ["hesitation", "n"], ["patient explanation", "phrase"], ["majority choice", "phrase"], ["feel pressured", "phrase"], ["decision-maker", "n"], ["long-term care", "phrase"], ["family values", "phrase"]]};
+const KEY = 'test_practice_unit1_ocean_v1';
+let soundOn = true;
+let state = { answers: {}, first: {}, retries: {}, name:'', cls:'', vocab:{} };
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function renderVocab(sec){
+  const list = VOCAB[String(sec)];
+  if(!list) return '';
+  return `<div class="vocab-prep">
+    <h3>🫧 TỪ VỰNG B1+ CẦN BIẾT TRƯỚC KHI ĐỌC</h3>
+    <div class="hint">Tự tra và điền nghĩa tiếng Việt vào cột bên phải. Đây là các từ/cụm quan trọng xuất hiện trực tiếp trong bài đọc.</div>
+    <div class="vocab-grid">
+      <div class="vcell"><b>Từ / cụm từ</b></div><div class="vcell"><b>Nghĩa em tự tra</b></div>
+      ${list.map((x,i)=>`<div class="vrow"><div class="vcell"><span class="vword">${esc(x[0])}</span> <span class="pos">(${esc(x[1])})</span></div><div class="vcell"><input class="vocab-input" data-vocab="${sec}-${i}" value="${esc(state.vocab[sec+'-'+i]||'')}" placeholder="Tự điền nghĩa..."></div></div>`).join('')}
+    </div></div>`;
+}
+
+function render(){
+  const main = document.getElementById('main');
+  let html = '';
+  for(let sec=1;sec<=6;sec++){
+    const qs = QUESTIONS.filter(q=>q.section===sec);
+    if(sec===3){
+      html += `<section class="section ${sec===1?'active':''}" id="sec${sec}">
+        <div class="section3-wrap">
+          <aside class="arrange-guide">
+            <h3>🧩 Questions 13–17</h3>
+            <p><b>Mark the letter A, B, C or D on your answer sheet to indicate the best arrangement of utterances or sentences to make a cohesive and coherent exchange or text in each of the following questions from 13 to 17.</b></p>
+            <p class="note">Mẹo: lần theo đại từ, từ nối, câu hỏi–trả lời và trình tự thời gian.</p>
+          </aside>
+          <div class="questions-pane">${qs.map(q=>qCard(q)).join('')}</div>
+        </div>
+      </section>`;
+    } else {
+      html += `<section class="section ${sec===1?'active':''}" id="sec${sec}">
+        ${renderVocab(sec)}
+        <div class="split">
+          <article class="passage-pane">${SOURCES[String(sec)]||'<div class="paper-instruction">Practice section</div>'}</article>
+          <div class="questions-pane">${qs.map(q=>qCard(q)).join('')}</div>
+        </div>
+      </section>`;
+    }
+  }
+  main.innerHTML = html;
+  bindOptions();
+  bindVocab();
+  restoreVisuals();
+}
+
+function qCard(q){
+  return `<article class="qcard" id="q${q.n}" data-q="${q.n}">
+    <div class="qhead"><div class="qnum">${q.stem}</div><span class="qbadge">Câu ${q.n} / 40</span></div>
+    <div class="options" role="group" aria-label="Đáp án câu ${q.n}">
+      ${Object.entries(q.options).map(([k,v])=>`<button class="option" data-choice="${k}" aria-label="Câu ${q.n} đáp án ${k}"><span class="letter">${k}.</span><span class="txt">${v}</span><span class="state-tag"></span></button>`).join('')}
+    </div>
+    <div class="feedback" aria-live="polite"></div>
+    <div class="explain">${q.explanation}</div>
+    <div class="qactions"><button class="smallbtn retry">↻ Làm lại câu này</button><button class="smallbtn primary next">Câu tiếp theo →</button></div>
+  </article>`;
+}
+
+function bindOptions(){
+  document.querySelectorAll('.qcard').forEach(card=>{
+    const n = +card.dataset.q;
+    card.querySelectorAll('.option').forEach(btn=>btn.addEventListener('click',()=>answer(n,btn.dataset.choice)));
+    card.querySelector('.retry').addEventListener('click',()=>retry(n));
+    card.querySelector('.next').addEventListener('click',()=>goNext(n));
+  });
+}
+
+function bindVocab(){
+  document.querySelectorAll('.vocab-input').forEach(inp=>inp.addEventListener('input',()=>{
+    state.vocab[inp.dataset.vocab] = inp.value;
+    persist();
+  }));
+}
+
+function answer(n, choice){
+  if(state.answers[n]) return;
+  const q=QUESTIONS.find(x=>x.n===n), card=document.getElementById('q'+n);
+  const correct = choice===q.correct;
+  state.answers[n]={choice,correct};
+  if(state.first[n]===undefined) state.first[n]=correct;
+  card.querySelectorAll('.option').forEach(b=>{
+    b.disabled=true;
+    const k=b.dataset.choice, tag=b.querySelector('.state-tag');
+    if(k===q.correct){ b.classList.add('correct'); tag.textContent = k===choice?'✓ Đúng':'✓ Đáp án đúng'; }
+    else if(k===choice){ b.classList.add('wrong'); tag.textContent='✕ Sai'; }
+    else b.classList.add('strike');
+  });
+  const fb=card.querySelector('.feedback');
+  fb.className='feedback '+(correct?'good':'bad');
+  fb.textContent=correct?'✓ Chính xác! Giỏi lắm, con cố lên!':'✕ Chưa chính xác! Đáp án đúng là '+q.correct+'.';
+  card.querySelector('.explain').classList.add('open');
+  card.querySelector('.qactions').classList.add('show');
+  if(correct){ ding(); confetti(card); speak('Giỏi lắm, con cố lên!'); }
+  else { wrongTone(); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); speak('Ôi trời ơi, con đọc kỹ đáp án cho cô!'); }
+  updateStats(); persist();
+}
+
+function retry(n){
+  const card=document.getElementById('q'+n);
+  delete state.answers[n];
+  state.retries[n]=(state.retries[n]||0)+1;
+  card.querySelectorAll('.option').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong','strike');b.querySelector('.state-tag').textContent='';});
+  card.querySelector('.feedback').className='feedback';
+  card.querySelector('.feedback').textContent='';
+  card.querySelector('.explain').classList.remove('open');
+  card.querySelector('.qactions').classList.remove('show');
+  persist(); updateStats();
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function goNext(n){
+  const next=QUESTIONS.find(q=>q.n===n+1);
+  if(!next) return document.getElementById('submitBtn').scrollIntoView({behavior:'smooth'});
+  if(next.section!==QUESTIONS.find(q=>q.n===n).section) activateSection(next.section);
+  setTimeout(()=>document.getElementById('q'+next.n).scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+function restoreVisuals(){
+  for(const [n,a] of Object.entries(state.answers)){
+    const q=QUESTIONS.find(x=>x.n===+n), card=document.getElementById('q'+n);
+    if(!q||!card) continue;
+    card.querySelectorAll('.option').forEach(b=>{
+      b.disabled=true; const k=b.dataset.choice, tag=b.querySelector('.state-tag');
+      if(k===q.correct){b.classList.add('correct');tag.textContent=k===a.choice?'✓ Đúng':'✓ Đáp án đúng';}
+      else if(k===a.choice){b.classList.add('wrong');tag.textContent='✕ Sai';}
+      else b.classList.add('strike');
+    });
+    const fb=card.querySelector('.feedback'); fb.className='feedback '+(a.correct?'good':'bad');
+    fb.textContent=a.correct?'✓ Chính xác!':'✕ Chưa chính xác! Đáp án đúng là '+q.correct+'.';
+    card.querySelector('.explain').classList.add('open'); card.querySelector('.qactions').classList.add('show');
+  }
+  document.getElementById('studentName').value=state.name||'';
+  document.getElementById('studentClass').value=state.cls||'';
+  updateStats();
+}
+
+function updateStats(){
+  const done=Object.keys(state.first).length;
+  const correct=Object.values(state.first).filter(Boolean).length;
+  const wrong=done-correct, rate=done?Math.round(correct/done*100):0;
+  sDone.textContent=done; sLeft.textContent=40-done; sCorrect.textContent=correct;sWrong.textContent=wrong;sRate.textContent=rate+'%';
+  progress.style.width=(done/40*100)+'%';
+}
+
+function activateSection(sec){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelector('#sec'+sec).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',+t.dataset.sec===+sec));
+  window.scrollTo({top:document.querySelector('.section-tabs').offsetTop-8,behavior:'smooth'});
+}
+
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>activateSection(t.dataset.sec)));
+
+function findFirst(filter){
+  const q=QUESTIONS.find(filter); if(!q) return alert('Không có câu phù hợp.');
+  activateSection(q.section); setTimeout(()=>document.getElementById('q'+q.n).scrollIntoView({behavior:'smooth',block:'center'}),80);
+}
+unfinishedBtn.addEventListener('click',()=>findFirst(q=>state.first[q.n]===undefined));
+wrongBtn.addEventListener('click',()=>findFirst(q=>state.first[q.n]===false));
+
+submitBtn.addEventListener('click',()=>{
+  const correct=Object.values(state.first).filter(Boolean).length;
+  const done=Object.keys(state.first).length;
+  const score=(correct/40*10).toFixed(2).replace('.00','');
+  const pct=Math.round(correct/40*100);
+  let msg=pct>=90?'Con làm rất tốt! Hãy tiếp tục phát huy nhé!':pct>=70?'Con làm khá tốt! Hãy xem lại một vài câu nhé!':pct>=50?'Con đã có cố gắng! Hãy đọc kỹ phần giải thích và làm lại nhé!':'Không sao đâu! Con hãy bình tĩnh xem lại kiến thức và thử thêm lần nữa nhé!';
+  submitBox.innerHTML=`<div class="scorebig">Điểm lần đầu: ${score} / 10</div>
+  <p><b>${esc(state.name||'Học sinh')}</b>${state.cls?' • Lớp '+esc(state.cls):''}</p>
+  <p>Đã làm lần đầu: <b>${done}/40</b> • Đúng lần đầu: <b>${correct}</b> • Chưa làm: <b>${40-done}</b></p>
+  <p>${msg}</p><p class="note">Điểm giữ theo kết quả lần trả lời đầu tiên để phản ánh sát bài làm trên giấy. Các lần “Làm lại câu này” chỉ phục vụ luyện tập.</p>`;
+  submitBox.classList.add('show'); submitBox.scrollIntoView({behavior:'smooth'});
+});
+
+saveIdentity.addEventListener('click',()=>{state.name=studentName.value.trim();state.cls=studentClass.value.trim();persist();});
+studentName.addEventListener('change',()=>{state.name=studentName.value.trim();persist();});
+studentClass.addEventListener('change',()=>{state.cls=studentClass.value.trim();persist();});
+
+resetBtn.addEventListener('click',()=>{if(confirm('Làm lại toàn bộ? Kết quả hiện tại sẽ được xóa.')){state={answers:{},first:{},retries:{},name:studentName.value.trim(),cls:studentClass.value.trim(),vocab:state.vocab||{}};persist();render();activateSection(1);}});
+clearBtn.addEventListener('click',()=>{if(confirm('Xóa toàn bộ dữ liệu đã lưu trên trình duyệt?')){localStorage.removeItem(KEY);state={answers:{},first:{},retries:{},name:'',cls:'',vocab:{}};render();activateSection(1);studentName.value='';studentClass.value='';}});
+
+soundBtn.addEventListener('click',()=>{soundOn=!soundOn;soundBtn.textContent=soundOn?'🔊 Âm thanh: Bật':'🔇 Âm thanh: Tắt';persist();if(!soundOn&&'speechSynthesis'in window)speechSynthesis.cancel();});
+
+function persist(){localStorage.setItem(KEY,JSON.stringify({...state,soundOn}));}
+function load(){
+  const raw=localStorage.getItem(KEY);
+  if(raw){
+    try{const old=JSON.parse(raw);if(confirm('Phát hiện bài đang làm dở. Con có muốn tiếp tục không?')){state={answers:old.answers||{},first:old.first||{},retries:old.retries||{},name:old.name||'',cls:old.cls||'',vocab:old.vocab||{}};soundOn=old.soundOn!==false;}else localStorage.removeItem(KEY);}catch(e){}
+  }
+  soundBtn.textContent=soundOn?'🔊 Âm thanh: Bật':'🔇 Âm thanh: Tắt';
+}
+function speak(text){if(!soundOn||!('speechSynthesis'in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='vi-VN';u.rate=.95;speechSynthesis.speak(u);}catch(e){}}
+function audioCtx(){return new (window.AudioContext||window.webkitAudioContext)();}
+function ding(){
+  if(!soundOn)return;try{const c=audioCtx(),o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(660,c.currentTime);o.frequency.exponentialRampToValueAtTime(980,c.currentTime+.18);g.gain.setValueAtTime(.12,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.32);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.33);}catch(e){}
+}
+function wrongTone(){
+  if(!soundOn)return;try{const c=audioCtx();[0,1,2].forEach((i)=>{const o=c.createOscillator(),g=c.createGain(),t=c.currentTime+i*.14;o.type='triangle';o.frequency.value=[440,330,220][i];g.gain.setValueAtTime(.10,t);g.gain.exponentialRampToValueAtTime(.001,t+.13);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+.14);});}catch(e){}
+}
+function confetti(card){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const r=card.getBoundingClientRect(), x=r.left+r.width/2, y=Math.min(r.top+100,innerHeight-80);
+  const colors=['#1ea7d7','#64d9b5','#ffd166','#ef7f9a','#8f92ff'];
+  for(let i=0;i<34;i++){const e=document.createElement('i');e.className='confetti';e.style.left=x+'px';e.style.top=y+'px';e.style.background=colors[i%colors.length];e.style.setProperty('--dx',(Math.random()*420-210)+'px');e.style.setProperty('--dy',(Math.random()*300-180)+'px');document.body.appendChild(e);setTimeout(()=>e.remove(),950);}
+}
+load();
+render();
+</script>
+</body>
+</html>
